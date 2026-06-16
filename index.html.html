@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIT3 — AI Readiness Check</title>
+<style>
+  :root {
+    --ink:       #1a1a2e;
+    --mid:       #4a4a6a;
+    --pale:      #8888aa;
+    --bg:        #f7f7fb;
+    --card:      #ffffff;
+    --accent:    #3d5a99;
+    --accent-lt: #eef1f9;
+    --success:   #1e7f5e;
+    --success-lt:#e8f5f0;
+    --border:    #dde0ee;
+    --radius:    10px;
+    --sans:      'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 28px 24px 22px;
+    text-align: center;
+  }
+  header .logo {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: clamp(20px, 5vw, 26px);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  header p {
+    margin-top: 8px;
+    font-size: 14px;
+    opacity: 0.85;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Progress bar ── */
+  #progress-wrap {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  #progress-label {
+    font-size: 12px;
+    color: var(--mid);
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #progress-bar-track {
+    height: 5px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  #progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.35s ease;
+    width: 0%;
+  }
+
+  /* ── Main content ── */
+  main {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 24px 16px 0;
+  }
+
+  /* ── Why block ── */
+  .why-block {
+    background: var(--accent-lt);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 28px;
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+  .why-block strong { color: var(--ink); }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pale);
+    margin-bottom: 12px;
+    margin-top: 32px;
+  }
+
+  /* ── Question card ── */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 18px 14px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .q-card.answered { border-color: var(--accent); }
+
+  .q-text {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .q-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pale);
+    margin-bottom: 4px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Scale ── */
+  .scale-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--pale);
+    padding: 0 2px;
+    margin-top: 2px;
+  }
+  .scale-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .scale-options label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .scale-options input[type="radio"] { display: none; }
+  .scale-dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    transition: all 0.15s;
+  }
+  .scale-options input[type="radio"]:checked + .scale-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: scale(1.12);
+  }
+  .scale-options label:hover .scale-dot {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Submit ── */
+  #submit-wrap {
+    margin-top: 32px;
+    text-align: center;
+  }
+  #submit-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 15px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    width: 100%;
+    max-width: 320px;
+  }
+  #submit-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  #submit-btn:not(:disabled):hover { opacity: 0.88; }
+  #submit-btn:not(:disabled):active { transform: scale(0.98); }
+  #unanswered-msg {
+    color: #c0392b;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+  }
+
+  /* ── Result screen ── */
+  #result-screen {
+    display: none;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 32px 16px 0;
+    text-align: center;
+  }
+
+  .result-code-box {
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    padding: 32px 24px 28px;
+    margin-bottom: 24px;
+  }
+  .result-code-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pale);
+    margin-bottom: 8px;
+  }
+  .result-code {
+    font-size: clamp(42px, 12vw, 68px);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .result-code-sub {
+    font-size: 13px;
+    color: var(--mid);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .thankyou-box {
+    background: var(--success-lt);
+    border-left: 4px solid var(--success);
+    border-radius: var(--radius);
+    padding: 20px 20px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  .thankyou-box h2 {
+    font-size: 17px;
+    color: var(--success);
+    margin-bottom: 8px;
+  }
+  .thankyou-box p {
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.65;
+  }
+  .thankyou-box p + p { margin-top: 8px; }
+
+  .privacy-note {
+    font-size: 12px;
+    color: var(--pale);
+    line-height: 1.6;
+    padding: 14px 16px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .show-trainer-cta {
+    margin-top: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-lt);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 24px;
+    display: block;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+
+  .ait3-footer {
+    margin-top: 28px;
+    font-size: 11px;
+    color: var(--pale);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .ait3-footer a { color: var(--pale); }
+
+  /* ── Responsive ── */
+  @media (max-width: 400px) {
+    .scale-dot { width: 28px; height: 28px; font-size: 10px; }
+    .result-code { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">AIT3 &mdash; Artificial Intelligence Train The Teacher</div>
+  <h1>AI Readiness Check</h1>
+  <p style="font-size:15px; margin-top:6px; margin-bottom:10px;">
+    16 questions &nbsp;&middot;&nbsp; Under 5 minutes &nbsp;&middot;&nbsp;
+    Fully free &nbsp;&middot;&nbsp; Anonymous &nbsp;&middot;&nbsp; No data stored
+  </p>
+  <div style="
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 12px 16px;
+    max-width: 540px;
+    margin: 0 auto;
+    font-size: 12px;
+    line-height: 1.65;
+    opacity: 0.9;
+    text-align: left;
+  ">
+    This instrument is part of the <strong>AI Literacy for Educators</strong>
+    research content hosted on
+    <strong>Cours<span style="font-weight:800;">x</span></strong>, an open platform
+    supporting AI literacy implementation in teacher development contexts.
+    Developed by <strong>Shenoy &amp; Saarela</strong> (University of
+    Jyv&auml;skyl&auml;, Finland), grounded in the Technology Acceptance Model
+    (Davis, 1989; Venkatesh &amp; Bala, 2008) and the GenAI-TPD framework for
+    integrating generative AI into teacher professional development
+    (Shenoy &amp; Saarela, <em>Discover Education</em>, 2026).
+    Supported by the Research Council of Finland (project no.&nbsp;356314).
+    <span style="display:block; margin-top:6px; font-style:italic;">
+      Your responses are never stored, transmitted, or linked to your identity
+      in any way. This tool is completely free to use.
+    </span>
+  </div>
+</header>
+
+<div id="progress-wrap">
+  <div id="progress-label">
+    <span id="progress-text">0 of 16 answered</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div id="progress-bar-track">
+    <div id="progress-bar-fill"></div>
+  </div>
+</div>
+
+<!-- ── Survey ── -->
+<main id="survey-main">
+
+  <div class="why-block">
+    <strong>Why are you being asked this?</strong><br>
+    Your trainer is using your responses to design today's session around what this group
+    actually needs, not what is assumed. There are no right or wrong answers.
+    Respond based on how you genuinely feel right now about using AI in your teaching.
+    Your individual responses are never seen by anyone. Only the collective pattern
+    across the whole group is used.
+  </div>
+
+  <!-- AISE -->
+  <div class="section-label">Your confidence with AI tools</div>
+
+  <div class="q-card" id="card-1">
+    <div class="q-num">Q1 of 16</div>
+    <div class="q-text">I have the fundamental understanding and skills needed to use AI tools effectively in my teaching.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q1"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-2">
+    <div class="q-num">Q2 of 16</div>
+    <div class="q-text">I feel confident that I can use AI tools to support my classroom activities.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q2"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-3">
+    <div class="q-num">Q3 of 16</div>
+    <div class="q-text">AI tools fit naturally with the other technologies I already use in my work.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q3"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <!-- PU -->
+  <div class="section-label">How useful AI feels for teaching</div>
+
+  <div class="q-card" id="card-4">
+    <div class="q-num">Q4 of 16</div>
+    <div class="q-text">Using AI tools would significantly improve my productivity and efficiency as a teacher.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q4"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-5">
+    <div class="q-num">Q5 of 16</div>
+    <div class="q-text">AI tools can offer helpful suggestions and knowledge for the tasks I undertake in class.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q5"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-6">
+    <div class="q-num">Q6 of 16</div>
+    <div class="q-text">I find AI tools to be a valuable asset in achieving my teaching goals.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q6"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-7">
+    <div class="q-num">Q7 of 16</div>
+    <div class="q-text">AI tools would help me complete lesson preparation tasks more quickly and effectively.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q7"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <!-- PEOU -->
+  <div class="section-label">How easy AI feels to access and use</div>
+
+  <div class="q-card" id="card-8">
+    <div class="q-num">Q8 of 16</div>
+    <div class="q-text">Learning to use AI tools for teaching has been straightforward for me.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q8"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-9">
+    <div class="q-num">Q9 of 16</div>
+    <div class="q-text">I have access to the resources I need to use AI tools in my teaching work.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q9"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-10">
+    <div class="q-num">Q10 of 16</div>
+    <div class="q-text">AI tools are relatively easy to use and do not demand much effort from me.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q10"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <!-- PE -->
+  <div class="section-label">How engaging AI feels</div>
+
+  <div class="q-card" id="card-11">
+    <div class="q-num">Q11 of 16</div>
+    <div class="q-text">Experimenting with AI tools for my teaching is genuinely engaging and interesting.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q11"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-12">
+    <div class="q-num">Q12 of 16</div>
+    <div class="q-text">Using AI tools adds an element of excitement to my professional work.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q12"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-13">
+    <div class="q-num">Q13 of 16</div>
+    <div class="q-text">I find it satisfying to accomplish teaching tasks with the assistance of AI tools.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q13"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <!-- BI -->
+  <div class="section-label">Your intention to use AI going forward</div>
+
+  <div class="q-card" id="card-14">
+    <div class="q-num">Q14 of 16</div>
+    <div class="q-text">I plan to incorporate AI tools into my teaching practice on a regular basis.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q14"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-15">
+    <div class="q-num">Q15 of 16</div>
+    <div class="q-text">I intend to increase my use of AI tools in my professional work going forward.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q15"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div class="q-card" id="card-16">
+    <div class="q-num">Q16 of 16</div>
+    <div class="q-text">I will make use of AI tools in my teaching in the future.</div>
+    <div class="scale-wrap">
+      <div class="scale-options" id="q16"></div>
+      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    </div>
+  </div>
+
+  <div id="submit-wrap">
+    <button id="submit-btn" disabled>See my readiness code</button>
+    <div id="unanswered-msg">Please answer all 16 questions before submitting.</div>
+  </div>
+
+</main>
+
+<!-- ── Result ── -->
+<div id="result-screen">
+
+  <div class="result-code-box">
+    <div class="result-code-label">Your readiness code</div>
+    <div class="result-code" id="result-code-display"></div>
+    <div class="result-code-sub" id="result-code-sub"></div>
+  </div>
+
+  <div class="thankyou-box">
+    <h2>Thank you — you did great.</h2>
+    <p>
+      Your responses have helped generate a readiness code that your
+      facilitator will use to design a training session tailored to
+      this group's actual needs, not a generic one-size-fits-all programme.
+    </p>
+    <p>
+      Your individual responses are completely anonymous. No names, no
+      device signatures, and no personal data of any kind have been
+      recorded or transmitted. What the trainer sees is only the
+      collective pattern across the whole cohort.
+    </p>
+    <p>
+      <strong>Please show the code above to your facilitator or trainer now.</strong>
+      They will use it alongside the other codes in the room to decide
+      where today's session will focus.
+    </p>
+  </div>
+
+  <div class="privacy-note">
+    This instrument is part of the AIT3 (Artificial Intelligence Train The Teacher)
+    research programme, University of Jyv&auml;skyl&auml;, Finland,
+    hosted on Cours<strong>x</strong> &mdash; an open platform supporting
+    AI literacy implementation in teacher development contexts.
+    Based on TAM (Davis, 1989; Venkatesh &amp; Bala, 2008), adapted by
+    Shenoy &amp; Saarela (2026). No data is stored, collected, or transmitted.
+  </div>
+
+  <div class="show-trainer-cta">
+    &#128073; Show this screen to your trainer now
+  </div>
+
+  <div class="ait3-footer">
+    AIT3 &middot; <a href="https://coursx.app">Cours<strong>x</strong></a> &middot;
+    Free &middot; Anonymous &middot; Open access<br>
+    Supported by the Research Council of Finland (project no.&nbsp;356314)
+  </div>
+
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────
+const QUESTIONS = 16;
+const THRESHOLD = 5.7;
+
+// Dimension map: which question indices belong to which dim
+// q1-q3 = AISE, q4-q7 = PU, q8-q10 = PEOU, q11-q13 = PE, q14-q16 = BI
+const DIMS = {
+  AISE:  [1, 2, 3],
+  PU:    [4, 5, 6, 7],
+  PEOU:  [8, 9, 10],
+  PE:    [11, 12, 13],
+  BI:    [14, 15, 16]
+};
+
+const DIM_ORDER = ['AISE', 'PU', 'PEOU', 'PE', 'BI'];
+
+// Friendly label for the result sub-line
+const DIM_LABELS = {
+  AISE: 'AI Self-Efficacy',
+  PU:   'Perceived Usefulness',
+  PEOU: 'Perceived Ease of Use',
+  PE:   'Perceived Enjoyment',
+  BI:   'Behavioural Intention'
+};
+
+// ── Build scale buttons ──────────────────────────────────────────
+const answers = {};
+
+function buildScales() {
+  for (let q = 1; q <= QUESTIONS; q++) {
+    const wrap = document.getElementById('q' + q);
+    for (let v = 1; v <= 7; v++) {
+      const lbl = document.createElement('label');
+      const inp = document.createElement('input');
+      inp.type = 'radio';
+      inp.name = 'q' + q;
+      inp.value = v;
+      inp.addEventListener('change', () => {
+        answers[q] = v;
+        document.getElementById('card-' + q).classList.add('answered');
+        updateProgress();
+      });
+      const dot = document.createElement('div');
+      dot.className = 'scale-dot';
+      dot.textContent = v;
+      lbl.appendChild(inp);
+      lbl.appendChild(dot);
+      wrap.appendChild(lbl);
+    }
+  }
+}
+
+// ── Progress ────────────────────────────────────────────────────
+function updateProgress() {
+  const n = Object.keys(answers).length;
+  const pct = Math.round((n / QUESTIONS) * 100);
+  document.getElementById('progress-text').textContent = n + ' of ' + QUESTIONS + ' answered';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar-fill').style.width = pct + '%';
+  document.getElementById('submit-btn').disabled = (n < QUESTIONS);
+}
+
+// ── Scoring ──────────────────────────────────────────────────────
+function computeCode() {
+  const means = {};
+  for (const [dim, qs] of Object.entries(DIMS)) {
+    const sum = qs.reduce((acc, q) => acc + (answers[q] || 0), 0);
+    means[dim] = sum / qs.length;
+  }
+
+  const letters = DIM_ORDER.map(d => means[d] <= THRESHOLD ? 'A' : 'S');
+  const attendCount = letters.filter(l => l === 'A').length;
+  let effort;
+  if (attendCount >= 3)      effort = 'E';
+  else if (attendCount >= 1) effort = 'M';
+  else                       effort = 'L';
+
+  const code = effort + '-' + letters.join('');
+
+  // Build sub-line
+  const attendDims = DIM_ORDER.filter((d, i) => letters[i] === 'A');
+  let sub = '';
+  if (effort === 'L') {
+    sub = 'All dimensions near ceiling. You are highly ready for AI training.';
+  } else {
+    const dimNames = attendDims.map(d => DIM_LABELS[d]);
+    sub = 'Focus area' + (dimNames.length > 1 ? 's' : '') + ': ' + dimNames.join(', ') + '.';
+  }
+
+  return { code, sub };
+}
+
+// ── Submit ───────────────────────────────────────────────────────
+document.getElementById('submit-btn').addEventListener('click', () => {
+  if (Object.keys(answers).length < QUESTIONS) {
+    document.getElementById('unanswered-msg').style.display = 'block';
+    return;
+  }
+  const { code, sub } = computeCode();
+  document.getElementById('result-code-display').textContent = code;
+  document.getElementById('result-code-sub').textContent = sub;
+
+  document.getElementById('survey-main').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('result-screen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ── Init ─────────────────────────────────────────────────────────
+buildScales();
+updateProgress();
+</script>
+</body>
+</html>
