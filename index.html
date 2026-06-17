@@ -3,625 +3,748 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIT3 — AI Readiness Check</title>
+<title>AIT3 — AI Readiness Check for Teachers</title>
+<meta name="description" content="A free, anonymous AI readiness diagnostic instrument for teachers. Part of the AI literacy research programme at the University of Jyväskylä, Finland.">
 <style>
   :root {
-    --ink:       #1a1a2e;
-    --mid:       #4a4a6a;
-    --pale:      #8888aa;
-    --bg:        #f7f7fb;
-    --card:      #ffffff;
-    --accent:    #3d5a99;
-    --accent-lt: #eef1f9;
-    --success:   #1e7f5e;
-    --success-lt:#e8f5f0;
-    --border:    #dde0ee;
+    --navy:      #1B2A4A;
+    --navy-lt:   #243659;
+    --gold:      #E8A020;
+    --ink:       #1A202C;
+    --mid:       #4A5568;
+    --pale:      #718096;
+    --bg:        #F7F8FC;
+    --card:      #FFFFFF;
+    --accent:    #1B2A4A;
+    --accent-lt: #EEF1F8;
+    --success:   #1E6B4A;
+    --success-lt:#E8F5EF;
+    --border:    #DDE2EE;
     --radius:    10px;
     --sans:      'Segoe UI', system-ui, -apple-system, sans-serif;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
   body {
     font-family: var(--sans);
     background: var(--bg);
     color: var(--ink);
     min-height: 100vh;
-    padding: 0 0 60px;
+    padding-bottom: 60px;
   }
 
-  /* ── Header ── */
+  /* ── HEADER ── */
   header {
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lt) 100%);
     color: #fff;
-    padding: 28px 24px 22px;
-    text-align: center;
+    padding: 28px 20px 24px;
   }
-  header .logo {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+
+  .header-inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .header-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    opacity: 0.75;
-    margin-bottom: 6px;
+    color: var(--gold);
+    margin-bottom: 10px;
   }
+
   header h1 {
     font-size: clamp(20px, 5vw, 26px);
-    font-weight: 700;
-    line-height: 1.25;
-  }
-  header p {
-    margin-top: 8px;
-    font-size: 14px;
-    opacity: 0.85;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 18px;
   }
 
-  /* ── Progress bar ── */
+  .header-info {
+    background: rgba(255,255,255,0.10);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.88);
+    margin-bottom: 16px;
+  }
+
+  .header-info strong { color: #fff; }
+  .header-info em { color: var(--gold); font-style: normal; }
+  .header-info a {
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .header-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.10);
+    border-radius: 99px;
+    padding: 4px 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .pill::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── PROGRESS ── */
   #progress-wrap {
-    background: #fff;
+    background: var(--card);
     border-bottom: 1px solid var(--border);
     padding: 10px 20px;
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  #progress-label {
-    font-size: 12px;
-    color: var(--mid);
-    margin-bottom: 5px;
+
+  .progress-top {
     display: flex;
     justify-content: space-between;
+    font-size: 12px;
+    color: var(--pale);
+    margin-bottom: 6px;
   }
-  #progress-bar-track {
-    height: 5px;
+
+  .progress-track {
+    height: 4px;
     background: var(--border);
     border-radius: 99px;
     overflow: hidden;
   }
-  #progress-bar-fill {
+
+  .progress-fill {
     height: 100%;
-    background: var(--accent);
+    background: var(--navy);
     border-radius: 99px;
-    transition: width 0.35s ease;
+    transition: width 0.3s ease;
     width: 0%;
   }
 
-  /* ── Main content ── */
+  /* ── MAIN ── */
   main {
-    max-width: 620px;
+    max-width: 640px;
     margin: 0 auto;
     padding: 24px 16px 0;
   }
 
-  /* ── Why block ── */
+  /* ── WHY BLOCK ── */
   .why-block {
     background: var(--accent-lt);
-    border-left: 4px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 16px 18px;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 16px;
     margin-bottom: 28px;
     font-size: 14px;
     color: var(--mid);
-    line-height: 1.6;
+    line-height: 1.65;
   }
   .why-block strong { color: var(--ink); }
 
-  /* ── Section label ── */
+  /* ── SECTION LABEL ── */
   .section-label {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.10em;
     text-transform: uppercase;
     color: var(--pale);
-    margin-bottom: 12px;
-    margin-top: 32px;
+    margin: 32px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
   }
 
-  /* ── Question card ── */
+  /* ── QUESTION CARD ── */
   .q-card {
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px 18px 14px;
+    padding: 18px 16px 16px;
     margin-bottom: 12px;
     transition: border-color 0.2s;
   }
-  .q-card.answered { border-color: var(--accent); }
+  .q-card.answered {
+    border-color: var(--navy);
+    background: #fff;
+  }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .q-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pale);
+  }
+  .q-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: transparent;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .q-card.answered .q-check {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
 
   .q-text {
     font-size: 15px;
     line-height: 1.5;
     color: var(--ink);
-    margin-bottom: 14px;
-  }
-  .q-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--pale);
-    margin-bottom: 4px;
-    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    font-weight: 500;
   }
 
-  /* ── Scale ── */
-  .scale-wrap {
+  /* ── SCALE ── */
+  .scale-outer {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 0;
   }
-  .scale-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
+
+  /* Label row above */
+  .scale-label-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    margin-bottom: 4px;
+  }
+  .scale-label-cell {
+    text-align: center;
+    font-size: 9px;
     color: var(--pale);
-    padding: 0 2px;
-    margin-top: 2px;
+    line-height: 1.3;
+    padding: 0 1px;
   }
-  .scale-options {
-    display: flex;
-    justify-content: space-between;
-    gap: 4px;
+
+  /* Button row */
+  .scale-btn-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
   }
-  .scale-options label {
-    flex: 1;
+
+  .scale-btn-row label {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
     cursor: pointer;
   }
-  .scale-options input[type="radio"] { display: none; }
+
+  .scale-btn-row input[type="radio"] { display: none; }
+
   .scale-dot {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 42px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
     background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--mid);
     transition: all 0.15s;
-  }
-  .scale-options input[type="radio"]:checked + .scale-dot {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    transform: scale(1.12);
-  }
-  .scale-options label:hover .scale-dot {
-    border-color: var(--accent);
-    color: var(--accent);
+    margin: 0 auto;
   }
 
-  /* ── Submit ── */
+  .scale-btn-row input[type="radio"]:checked + .scale-dot {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  .scale-btn-row label:hover .scale-dot {
+    border-color: var(--navy);
+    color: var(--navy);
+    background: var(--accent-lt);
+  }
+
+  /* Scale end labels */
+  .scale-ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+  .scale-ends span {
+    font-size: 10px;
+    color: var(--pale);
+    font-style: italic;
+  }
+
+  /* ── SUBMIT ── */
   #submit-wrap {
-    margin-top: 32px;
+    margin-top: 36px;
     text-align: center;
   }
+
   #submit-btn {
-    background: var(--accent);
+    background: var(--navy);
     color: #fff;
     border: none;
     border-radius: var(--radius);
-    padding: 15px 40px;
+    padding: 16px 0;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
     width: 100%;
-    max-width: 320px;
+    max-width: 360px;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
   }
   #submit-btn:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: not-allowed;
   }
   #submit-btn:not(:disabled):hover { opacity: 0.88; }
   #submit-btn:not(:disabled):active { transform: scale(0.98); }
+
   #unanswered-msg {
-    color: #c0392b;
+    color: #B91C1C;
     font-size: 13px;
     margin-top: 10px;
     display: none;
   }
 
-  /* ── Result screen ── */
+  .submit-note {
+    font-size: 12px;
+    color: var(--pale);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ── RESULT SCREEN ── */
   #result-screen {
     display: none;
-    max-width: 620px;
+    max-width: 640px;
     margin: 0 auto;
     padding: 32px 16px 0;
-    text-align: center;
   }
 
   .result-code-box {
     background: var(--card);
-    border: 2px solid var(--accent);
+    border: 2px solid var(--navy);
     border-radius: 16px;
-    padding: 32px 24px 28px;
-    margin-bottom: 24px;
+    padding: 36px 24px 32px;
+    text-align: center;
+    margin-bottom: 20px;
   }
+
   .result-code-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--pale);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
+
   .result-code {
-    font-size: clamp(42px, 12vw, 68px);
+    font-size: clamp(48px, 14vw, 76px);
     font-weight: 800;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.1em;
+    color: var(--navy);
     line-height: 1;
+    font-variant-numeric: tabular-nums;
   }
-  .result-code-sub {
+
+  .result-dim-label {
     font-size: 13px;
     color: var(--mid);
     margin-top: 10px;
     line-height: 1.5;
   }
 
+  .show-trainer {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+  }
+
   .thankyou-box {
     background: var(--success-lt);
-    border-left: 4px solid var(--success);
-    border-radius: var(--radius);
-    padding: 20px 20px;
-    text-align: left;
-    margin-bottom: 20px;
+    border-left: 3px solid var(--success);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 18px 18px;
+    margin-bottom: 16px;
   }
   .thankyou-box h2 {
-    font-size: 17px;
+    font-size: 16px;
     color: var(--success);
     margin-bottom: 8px;
+    font-weight: 700;
   }
   .thankyou-box p {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--mid);
     line-height: 1.65;
   }
   .thankyou-box p + p { margin-top: 8px; }
 
-  .privacy-note {
+  .privacy-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
     font-size: 12px;
     color: var(--pale);
-    line-height: 1.6;
-    padding: 14px 16px;
-    background: var(--bg);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
+    line-height: 1.65;
     text-align: left;
   }
+  .privacy-box a { color: var(--navy); text-decoration: underline; }
 
-  .show-trainer-cta {
+  .result-footer {
     margin-top: 24px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-lt);
-    border: 2px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 16px 24px;
-    display: block;
     text-align: center;
-    letter-spacing: 0.01em;
-  }
-
-  .ait3-footer {
-    margin-top: 28px;
     font-size: 11px;
     color: var(--pale);
-    text-align: center;
-    line-height: 1.6;
+    line-height: 1.7;
+    padding-bottom: 40px;
   }
-  .ait3-footer a { color: var(--pale); }
 
-  /* ── Responsive ── */
-  @media (max-width: 400px) {
-    .scale-dot { width: 28px; height: 28px; font-size: 10px; }
-    .result-code { font-size: 48px; }
+  /* ── MOBILE ── */
+  @media (max-width: 380px) {
+    .scale-dot { font-size: 11px; border-radius: 6px; }
+    .result-code { font-size: 44px; }
+    .scale-label-cell { font-size: 8px; }
   }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-  <div class="logo">AIT3 &mdash; Artificial Intelligence Train The Teacher</div>
-  <h1>AI Readiness Check</h1>
-  <p style="font-size:15px; margin-top:6px; margin-bottom:10px;">
-    16 questions &nbsp;&middot;&nbsp; Under 5 minutes &nbsp;&middot;&nbsp;
-    Fully free &nbsp;&middot;&nbsp; Anonymous &nbsp;&middot;&nbsp; No data stored
-  </p>
-  <div style="
-    background: rgba(255,255,255,0.12);
-    border-radius: 8px;
-    padding: 12px 16px;
-    max-width: 540px;
-    margin: 0 auto;
-    font-size: 12px;
-    line-height: 1.65;
-    opacity: 0.9;
-    text-align: left;
-  ">
-    This instrument is part of the <strong>AI Literacy for Educators</strong>
-    research content hosted on
-    <strong>Cours<span style="font-weight:800;">x</span></strong>, an open platform
-    supporting AI literacy implementation in teacher development contexts.
-    Developed by <strong>Shenoy &amp; Saarela</strong> (University of
-    Jyv&auml;skyl&auml;, Finland), grounded in the Technology Acceptance Model
-    (Davis, 1989; Venkatesh &amp; Bala, 2008) and the GenAI-TPD framework for
-    integrating generative AI into teacher professional development
-    (Shenoy &amp; Saarela, <em>Discover Education</em>, 2026).
-    Supported by the Research Council of Finland (project no.&nbsp;356314).
-    <span style="display:block; margin-top:6px; font-style:italic;">
-      Your responses are never stored, transmitted, or linked to your identity
-      in any way. This tool is completely free to use.
-    </span>
+  <div class="header-inner">
+    <div class="header-tag">AIT3 &mdash; AI to Train The Teacher</div>
+    <h1>AI Readiness Check</h1>
+
+    <div class="header-info">
+      This instrument is part of the <strong>AI Literacy for Educators</strong>
+      research programme that <strong>Prashanth Shenoy</strong> and
+      <strong>Mirka Saarela</strong> are leading at the
+      <strong>University of Jyväskylä, Finland</strong>. As part of their
+      research initiative in the Global South, this tool was included in a
+      peer-reviewed research paper and is made freely available to the research
+      community to ensure that targeted, evidence-based training is delivered to
+      educators worldwide. The authors have also proposed the
+      <strong>GenAI-TPD framework</strong> for integrating generative AI into
+      teacher professional development, available at
+      <a href="https://doi.org/10.1007/s44217-026-01579-7" target="_blank" rel="noopener">
+        Discover Education (Springer, 2026)
+      </a>.
+      <br><br>
+      <em>Your responses are fully anonymous. No personal data, device
+      identifiers, or individual responses are stored or transmitted at any
+      point. This tool is completely free to use.</em>
+    </div>
+
+    <div class="header-pills">
+      <span class="pill">16 questions</span>
+      <span class="pill">Under 5 minutes</span>
+      <span class="pill">Fully free</span>
+      <span class="pill">Anonymous</span>
+      <span class="pill">No data stored</span>
+    </div>
   </div>
 </header>
 
+<!-- PROGRESS -->
 <div id="progress-wrap">
-  <div id="progress-label">
-    <span id="progress-text">0 of 16 answered</span>
-    <span id="progress-pct">0%</span>
+  <div class="progress-top">
+    <span id="prog-text">0 of 16 answered</span>
+    <span id="prog-pct">0%</span>
   </div>
-  <div id="progress-bar-track">
-    <div id="progress-bar-fill"></div>
+  <div class="progress-track">
+    <div class="progress-fill" id="prog-fill"></div>
   </div>
 </div>
 
-<!-- ── Survey ── -->
+<!-- SURVEY -->
 <main id="survey-main">
 
   <div class="why-block">
     <strong>Why are you being asked this?</strong><br>
-    Your trainer is using your responses to design today's session around what this group
-    actually needs, not what is assumed. There are no right or wrong answers.
-    Respond based on how you genuinely feel right now about using AI in your teaching.
-    Your individual responses are never seen by anyone. Only the collective pattern
-    across the whole group is used.
+    Your trainer is using your responses to design today's session around
+    what this group actually needs, not what is assumed. There are no right
+    or wrong answers. Respond based on how you genuinely feel right now
+    about using AI in your teaching. Your individual responses are never
+    seen by anyone. Only the collective pattern across the whole group is used.
   </div>
 
   <!-- AISE -->
-  <div class="section-label">Your confidence with AI tools</div>
+  <div class="section-label">Your confidence with AI tools &nbsp;(Q1&ndash;3)</div>
 
   <div class="q-card" id="card-1">
-    <div class="q-num">Q1 of 16</div>
-    <div class="q-text">I have the fundamental understanding and skills needed to use AI tools effectively in my teaching.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q1"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q1 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I have the fundamental understanding and skills needed to use AI tools effectively in my teaching.</div>
+    <div class="scale-outer" id="so1"></div>
   </div>
 
   <div class="q-card" id="card-2">
-    <div class="q-num">Q2 of 16</div>
-    <div class="q-text">I feel confident that I can use AI tools to support my classroom activities.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q2"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q2 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I feel confident that I can use AI tools to support my classroom activities.</div>
+    <div class="scale-outer" id="so2"></div>
   </div>
 
   <div class="q-card" id="card-3">
-    <div class="q-num">Q3 of 16</div>
-    <div class="q-text">AI tools fit naturally with the other technologies I already use in my work.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q3"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q3 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">AI tools fit naturally with the other technologies I already use in my work.</div>
+    <div class="scale-outer" id="so3"></div>
   </div>
 
   <!-- PU -->
-  <div class="section-label">How useful AI feels for teaching</div>
+  <div class="section-label">How useful AI feels for your teaching &nbsp;(Q4&ndash;7)</div>
 
   <div class="q-card" id="card-4">
-    <div class="q-num">Q4 of 16</div>
-    <div class="q-text">Using AI tools would significantly improve my productivity and efficiency as a teacher.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q4"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q4 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">Using AI tools would significantly improve my productivity and efficiency as a teacher.</div>
+    <div class="scale-outer" id="so4"></div>
   </div>
 
   <div class="q-card" id="card-5">
-    <div class="q-num">Q5 of 16</div>
-    <div class="q-text">AI tools can offer helpful suggestions and knowledge for the tasks I undertake in class.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q5"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q5 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">AI tools can offer helpful suggestions and knowledge for the tasks I undertake in class.</div>
+    <div class="scale-outer" id="so5"></div>
   </div>
 
   <div class="q-card" id="card-6">
-    <div class="q-num">Q6 of 16</div>
-    <div class="q-text">I find AI tools to be a valuable asset in achieving my teaching goals.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q6"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q6 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I find AI tools to be a valuable asset in achieving my teaching goals.</div>
+    <div class="scale-outer" id="so6"></div>
   </div>
 
   <div class="q-card" id="card-7">
-    <div class="q-num">Q7 of 16</div>
-    <div class="q-text">AI tools would help me complete lesson preparation tasks more quickly and effectively.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q7"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q7 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">AI tools would help me complete lesson preparation tasks more quickly and effectively.</div>
+    <div class="scale-outer" id="so7"></div>
   </div>
 
   <!-- PEOU -->
-  <div class="section-label">How easy AI feels to access and use</div>
+  <div class="section-label">How easy AI feels to access and use &nbsp;(Q8&ndash;10)</div>
 
   <div class="q-card" id="card-8">
-    <div class="q-num">Q8 of 16</div>
-    <div class="q-text">Learning to use AI tools for teaching has been straightforward for me.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q8"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q8 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">Learning to use AI tools for teaching has been straightforward for me.</div>
+    <div class="scale-outer" id="so8"></div>
   </div>
 
   <div class="q-card" id="card-9">
-    <div class="q-num">Q9 of 16</div>
-    <div class="q-text">I have access to the resources I need to use AI tools in my teaching work.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q9"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q9 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I have access to the resources I need to use AI tools in my teaching work.</div>
+    <div class="scale-outer" id="so9"></div>
   </div>
 
   <div class="q-card" id="card-10">
-    <div class="q-num">Q10 of 16</div>
-    <div class="q-text">AI tools are relatively easy to use and do not demand much effort from me.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q10"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q10 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">AI tools are relatively easy to use and do not demand much effort from me.</div>
+    <div class="scale-outer" id="so10"></div>
   </div>
 
   <!-- PE -->
-  <div class="section-label">How engaging AI feels</div>
+  <div class="section-label">How engaging AI feels &nbsp;(Q11&ndash;13)</div>
 
   <div class="q-card" id="card-11">
-    <div class="q-num">Q11 of 16</div>
-    <div class="q-text">Experimenting with AI tools for my teaching is genuinely engaging and interesting.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q11"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q11 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">Experimenting with AI tools for my teaching is genuinely engaging and interesting.</div>
+    <div class="scale-outer" id="so11"></div>
   </div>
 
   <div class="q-card" id="card-12">
-    <div class="q-num">Q12 of 16</div>
-    <div class="q-text">Using AI tools adds an element of excitement to my professional work.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q12"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q12 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">Using AI tools adds an element of excitement to my professional work.</div>
+    <div class="scale-outer" id="so12"></div>
   </div>
 
   <div class="q-card" id="card-13">
-    <div class="q-num">Q13 of 16</div>
-    <div class="q-text">I find it satisfying to accomplish teaching tasks with the assistance of AI tools.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q13"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q13 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I find it satisfying to accomplish teaching tasks with the assistance of AI tools.</div>
+    <div class="scale-outer" id="so13"></div>
   </div>
 
   <!-- BI -->
-  <div class="section-label">Your intention to use AI going forward</div>
+  <div class="section-label">Your intention to use AI going forward &nbsp;(Q14&ndash;16)</div>
 
   <div class="q-card" id="card-14">
-    <div class="q-num">Q14 of 16</div>
-    <div class="q-text">I plan to incorporate AI tools into my teaching practice on a regular basis.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q14"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q14 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I plan to incorporate AI tools into my teaching practice on a regular basis.</div>
+    <div class="scale-outer" id="so14"></div>
   </div>
 
   <div class="q-card" id="card-15">
-    <div class="q-num">Q15 of 16</div>
-    <div class="q-text">I intend to increase my use of AI tools in my professional work going forward.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q15"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q15 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I intend to increase my use of AI tools in my professional work going forward.</div>
+    <div class="scale-outer" id="so15"></div>
   </div>
 
   <div class="q-card" id="card-16">
-    <div class="q-num">Q16 of 16</div>
-    <div class="q-text">I will make use of AI tools in my teaching in the future.</div>
-    <div class="scale-wrap">
-      <div class="scale-options" id="q16"></div>
-      <div class="scale-labels"><span>Strongly Disagree</span><span>Strongly Agree</span></div>
+    <div class="q-meta">
+      <span class="q-num">Q16 of 16</span>
+      <div class="q-check">&#10003;</div>
     </div>
+    <div class="q-text">I will make use of AI tools in my teaching in the future.</div>
+    <div class="scale-outer" id="so16"></div>
   </div>
 
   <div id="submit-wrap">
-    <button id="submit-btn" disabled>See my readiness code</button>
-    <div id="unanswered-msg">Please answer all 16 questions before submitting.</div>
+    <button id="submit-btn" disabled>Generate my readiness code</button>
+    <div id="unanswered-msg">Please answer all 16 questions before continuing.</div>
+    <p class="submit-note">Your code is generated instantly in your browser.<br>Nothing is sent to any server.</p>
   </div>
 
 </main>
 
-<!-- ── Result ── -->
+<!-- RESULT -->
 <div id="result-screen">
 
   <div class="result-code-box">
     <div class="result-code-label">Your readiness code</div>
-    <div class="result-code" id="result-code-display"></div>
-    <div class="result-code-sub" id="result-code-sub"></div>
+    <div class="result-code" id="res-code"></div>
+    <div class="result-dim-label" id="res-sub"></div>
   </div>
+
+  <button class="show-trainer">&#128073;&nbsp; Show this screen to your trainer now</button>
 
   <div class="thankyou-box">
-    <h2>Thank you — you did great.</h2>
+    <h2>Thank you &mdash; you did great.</h2>
     <p>
       Your responses have helped generate a readiness code that your
-      facilitator will use to design a training session tailored to
-      this group's actual needs, not a generic one-size-fits-all programme.
+      facilitator will use alongside the whole group's codes to design
+      a training session targeted at what this cohort actually needs.
     </p>
     <p>
-      Your individual responses are completely anonymous. No names, no
-      device signatures, and no personal data of any kind have been
-      recorded or transmitted. What the trainer sees is only the
-      collective pattern across the whole cohort.
-    </p>
-    <p>
-      <strong>Please show the code above to your facilitator or trainer now.</strong>
-      They will use it alongside the other codes in the room to decide
-      where today's session will focus.
+      <strong>Your individual responses were never transmitted or stored.</strong>
+      The code was generated entirely within your browser. What the trainer
+      sees is only the collective pattern across the room, never your
+      individual answers.
     </p>
   </div>
 
-  <div class="privacy-note">
-    This instrument is part of the AIT3 (Artificial Intelligence Train The Teacher)
-    research programme, University of Jyv&auml;skyl&auml;, Finland,
-    hosted on Cours<strong>x</strong> &mdash; an open platform supporting
-    AI literacy implementation in teacher development contexts.
-    Based on TAM (Davis, 1989; Venkatesh &amp; Bala, 2008), adapted by
-    Shenoy &amp; Saarela (2026). No data is stored, collected, or transmitted.
+  <div class="privacy-box">
+    <strong>About this instrument.</strong> AIT3 (Artificial Intelligence Train
+    The Teacher) is part of the AI Literacy for Educators research programme led
+    by Prashanth Shenoy and Mirka Saarela at the University of Jyv&auml;skyl&auml;,
+    Finland. It is grounded in the Technology Acceptance Model
+    (Davis, 1989; Venkatesh &amp; Bala, 2008) and was validated in a study of
+    44 teachers in Bengaluru, India (Shenoy &amp; Saarela, ICETC 2026).
+    The GenAI-TPD framework that motivates this work is published in
+    <a href="https://doi.org/10.1007/s44217-026-01579-7" target="_blank" rel="noopener">
+      Discover Education, Springer (2026)
+    </a>.
+    Supported by the Research Council of Finland (project no. 356314).
+    No data of any kind is collected, stored, or transmitted.
   </div>
 
-  <div class="show-trainer-cta">
-    &#128073; Show this screen to your trainer now
-  </div>
-
-  <div class="ait3-footer">
-    AIT3 &middot; <a href="https://coursx.app">Cours<strong>x</strong></a> &middot;
-    Free &middot; Anonymous &middot; Open access<br>
-    Supported by the Research Council of Finland (project no.&nbsp;356314)
+  <div class="result-footer">
+    AIT3 &middot; University of Jyv&auml;skyl&auml;, Finland &middot; Free &middot; Anonymous<br>
+    Shenoy &amp; Saarela, 2026
   </div>
 
 </div>
 
 <script>
 // ── Config ──────────────────────────────────────────────────────
-const QUESTIONS = 16;
 const THRESHOLD = 5.7;
-
-// Dimension map: which question indices belong to which dim
-// q1-q3 = AISE, q4-q7 = PU, q8-q10 = PEOU, q11-q13 = PE, q14-q16 = BI
 const DIMS = {
-  AISE:  [1, 2, 3],
-  PU:    [4, 5, 6, 7],
-  PEOU:  [8, 9, 10],
-  PE:    [11, 12, 13],
-  BI:    [14, 15, 16]
+  AISE: [1,2,3],
+  PU:   [4,5,6,7],
+  PEOU: [8,9,10],
+  PE:   [11,12,13],
+  BI:   [14,15,16]
 };
-
-const DIM_ORDER = ['AISE', 'PU', 'PEOU', 'PE', 'BI'];
-
-// Friendly label for the result sub-line
+const DIM_ORDER = ['AISE','PU','PEOU','PE','BI'];
 const DIM_LABELS = {
   AISE: 'AI Self-Efficacy',
   PU:   'Perceived Usefulness',
@@ -629,84 +752,99 @@ const DIM_LABELS = {
   PE:   'Perceived Enjoyment',
   BI:   'Behavioural Intention'
 };
+const SCALE_LABELS = [
+  'Strongly\nDisagree',
+  'Moderately\nDisagree',
+  'Slightly\nDisagree',
+  'Neutral',
+  'Slightly\nAgree',
+  'Moderately\nAgree',
+  'Strongly\nAgree'
+];
 
-// ── Build scale buttons ──────────────────────────────────────────
 const answers = {};
 
-function buildScales() {
-  for (let q = 1; q <= QUESTIONS; q++) {
-    const wrap = document.getElementById('q' + q);
-    for (let v = 1; v <= 7; v++) {
-      const lbl = document.createElement('label');
-      const inp = document.createElement('input');
-      inp.type = 'radio';
-      inp.name = 'q' + q;
-      inp.value = v;
-      inp.addEventListener('change', () => {
-        answers[q] = v;
-        document.getElementById('card-' + q).classList.add('answered');
-        updateProgress();
-      });
-      const dot = document.createElement('div');
-      dot.className = 'scale-dot';
-      dot.textContent = v;
-      lbl.appendChild(inp);
-      lbl.appendChild(dot);
-      wrap.appendChild(lbl);
-    }
+// ── Build scales ────────────────────────────────────────────────
+function buildScale(qNum) {
+  const outer = document.getElementById('so' + qNum);
+
+  // Label row
+  const labelRow = document.createElement('div');
+  labelRow.className = 'scale-label-row';
+  SCALE_LABELS.forEach(txt => {
+    const cell = document.createElement('div');
+    cell.className = 'scale-label-cell';
+    cell.textContent = txt;
+    labelRow.appendChild(cell);
+  });
+
+  // Button row
+  const btnRow = document.createElement('div');
+  btnRow.className = 'scale-btn-row';
+
+  for (let v = 1; v <= 7; v++) {
+    const lbl = document.createElement('label');
+    const inp = document.createElement('input');
+    inp.type = 'radio';
+    inp.name = 'q' + qNum;
+    inp.value = v;
+    inp.addEventListener('change', () => {
+      answers[qNum] = v;
+      document.getElementById('card-' + qNum).classList.add('answered');
+      updateProgress();
+    });
+    const dot = document.createElement('div');
+    dot.className = 'scale-dot';
+    dot.textContent = v;
+    lbl.appendChild(inp);
+    lbl.appendChild(dot);
+    btnRow.appendChild(lbl);
   }
+
+  outer.appendChild(labelRow);
+  outer.appendChild(btnRow);
 }
 
 // ── Progress ────────────────────────────────────────────────────
 function updateProgress() {
   const n = Object.keys(answers).length;
-  const pct = Math.round((n / QUESTIONS) * 100);
-  document.getElementById('progress-text').textContent = n + ' of ' + QUESTIONS + ' answered';
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('progress-bar-fill').style.width = pct + '%';
-  document.getElementById('submit-btn').disabled = (n < QUESTIONS);
+  const pct = Math.round((n / 16) * 100);
+  document.getElementById('prog-text').textContent = n + ' of 16 answered';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('submit-btn').disabled = n < 16;
 }
 
-// ── Scoring ──────────────────────────────────────────────────────
+// ── Compute code ────────────────────────────────────────────────
 function computeCode() {
   const means = {};
   for (const [dim, qs] of Object.entries(DIMS)) {
-    const sum = qs.reduce((acc, q) => acc + (answers[q] || 0), 0);
-    means[dim] = sum / qs.length;
+    means[dim] = qs.reduce((s, q) => s + (answers[q] || 0), 0) / qs.length;
   }
-
   const letters = DIM_ORDER.map(d => means[d] <= THRESHOLD ? 'A' : 'S');
-  const attendCount = letters.filter(l => l === 'A').length;
-  let effort;
-  if (attendCount >= 3)      effort = 'E';
-  else if (attendCount >= 1) effort = 'M';
-  else                       effort = 'L';
-
+  const aCount = letters.filter(l => l === 'A').length;
+  const effort = aCount >= 3 ? 'E' : aCount >= 1 ? 'M' : 'L';
   const code = effort + '-' + letters.join('');
 
-  // Build sub-line
-  const attendDims = DIM_ORDER.filter((d, i) => letters[i] === 'A');
+  const attend = DIM_ORDER.filter((d,i) => letters[i] === 'A').map(d => DIM_LABELS[d]);
   let sub = '';
   if (effort === 'L') {
-    sub = 'All dimensions near ceiling. You are highly ready for AI training.';
+    sub = 'All dimensions at ceiling \u2014 highly ready for AI training.';
   } else {
-    const dimNames = attendDims.map(d => DIM_LABELS[d]);
-    sub = 'Focus area' + (dimNames.length > 1 ? 's' : '') + ': ' + dimNames.join(', ') + '.';
+    sub = 'Training focus: ' + attend.join(', ') + '.';
   }
-
   return { code, sub };
 }
 
 // ── Submit ───────────────────────────────────────────────────────
 document.getElementById('submit-btn').addEventListener('click', () => {
-  if (Object.keys(answers).length < QUESTIONS) {
+  if (Object.keys(answers).length < 16) {
     document.getElementById('unanswered-msg').style.display = 'block';
     return;
   }
   const { code, sub } = computeCode();
-  document.getElementById('result-code-display').textContent = code;
-  document.getElementById('result-code-sub').textContent = sub;
-
+  document.getElementById('res-code').textContent = code;
+  document.getElementById('res-sub').textContent = sub;
   document.getElementById('survey-main').style.display = 'none';
   document.getElementById('progress-wrap').style.display = 'none';
   document.getElementById('result-screen').style.display = 'block';
@@ -714,7 +852,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 });
 
 // ── Init ─────────────────────────────────────────────────────────
-buildScales();
+for (let q = 1; q <= 16; q++) buildScale(q);
 updateProgress();
 </script>
 </body>
